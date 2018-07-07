@@ -1,0 +1,24 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/complexValidate.js"></script>
+    <script src="js/index.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<div id="validate">
+    <input type="text" placeholder="不能为空" validateGroup="1" validate="notNull|length(1,5)"><br>
+    <input type="text" placeholder="只能为空" validateGroup="1" validate="null"><br>
+    <input type="text" placeholder="邮箱" validateGroup="1" validate="mail"><br>
+    <br><br><br><br>
+    <input type="date" placeholder="不能为空" validateGroup="2" validate="notNull"><br>
+    <input type="text" placeholder="整数并且不为空" validateGroup="2" validate="notNull|int|phone"><br>
+    <input type="text" placeholder="xxx" validateGroup="2" validate="length(1,2)"><br>
+    <input type="text" value="" validateGroup="2" validate="password|int"><br>
+    <input type="text" value="" validateGroup="2" validate="password|int"><br>
+    <button id="sub">验证</button>
+</div>
+
+</body>
+</html>
