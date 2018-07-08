@@ -1,3 +1,7 @@
+/*!
+ * complexValidate v0.2
+ * Date: 2018-07-08T19:26Z
+ */
 (function () {
     //基本正则
     var validateRegex={
@@ -109,7 +113,7 @@
                     case 'regex':if(attribute.regex.test(item.val())!=true){return false}break
                     case 'fun':
                         //返回当前区域validateRound中同一验证组validateGroup中同一验证类型validate的input数组
-                        var input=$(currGroupObj.validateRound+" input"+"[validateGroup='"+currGroupObj.validateGroup+"'][validate='"+validateArr+"']")
+                        var input=$(currGroupObj.validateRound+" *"+"[validateGroup='"+currGroupObj.validateGroup+"'][validate*='"+reg+"']")
                         if(attr.param){
                             var flag=eval("attribute.regex(input,multiRegex,"+attr.param+")")
                             if(flag!=true){return false}
@@ -129,13 +133,11 @@
         var groupObj= searchGroup(group)
         currGroupObj=groupObj
         //在当前验证区域validateRound中寻找带有group验证组的所有input标签
-        var input=$(groupObj.validateRound+" input"+"[validateGroup="+group+"]")
+        var input=$(groupObj.validateRound+" *"+"[validateGroup="+group+"]")
         var arr=new Array();//返回对象
         for(var i=0;i<input.length;i++){
             var status=Regex($(input[i]))
-            if(!status){
-                arr.push($(input[i]));
-            }
+            arr.push({el:$(input[i]),status:status});
             if(callback){callback($(input[i]),status);}
         }
         return arr;
