@@ -1,6 +1,6 @@
 第一次写框架 可能代码性能并不好 ^_^
 
-# complexValidate 前端复杂验证框架
+# complexValidate v0.2 前端复杂验证框架
 
 ## 使用说明
 
@@ -16,7 +16,7 @@
 ```
 <input type="text"  validateGroup="1" validate="mail">
 ```
-### 3.2 其中 mail 是内置的验证方式,类似的一些内置的验证方式还有:
+### 3.2 其中 mail 是内置的验证类型,类似的一些内置的验证类型还有:
 ******
 |    验证类型   |   说明   |
 | --------     | -----:   |
@@ -119,7 +119,7 @@ $(document).on("click","#sub2",function(){
 当分别点击两个按钮时验证不同的组别
 验证每一个input调用一次window.simpleValidate.validate方法中的回调函数
 传入当前input及状态
-函数执行完毕返回未验证成功的input
+函数执行完毕返回当前验证组input对象及验证状态的数组
 
 ## 5.自定义验证类型
 很明显,目前内置的验证函数根本无法满足很多复杂的验证
@@ -149,9 +149,9 @@ simpleValidate.option({
 <input type="text"  validateGroup="1" validate="xxx(1,2)">
 ```
 其中xxx的值为一个对象,验证对象的type属性的值目前只能为"fun"或"regex"
-***
-目前type属性的值为"fun"的验证类型在使用时只能独占,不能多个验证类型一起共同验证
-***
+
+~~目前type属性的值为"fun"的验证类型在使用时只能独占,不能多个验证类型一起共同验证~~
+
 如果type为"regex"则,验证对象的regex属性只能为一个正则表达式
 
 如果type为"fun"则,验证对象的regex属性只能为一个匿名函数
