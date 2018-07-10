@@ -169,17 +169,23 @@ complexValidate.option({
                  }
         }
 
+
 1)curr为当前验证对象
+
 2)group不变,为当前验证范围中带有该验证类型的数组
+
 3)multiRegex改为regex,现在只需要传一个需要验证的函数和验证类型字符串"int|notNull|length(1,5)"即可：
+```
      xxx:{
         type:'fun',
         regex:function (i,j,regex) {
               return  regex(i,"int|notNull|length(1,5)")
              }
         }
+```
 
 第四个参数及以后的参数由用户定义
+
 如上述代码所示,定义了k,j参数,在 validate="xxx(1,2)"
 
 
