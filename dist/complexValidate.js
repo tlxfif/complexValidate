@@ -1,6 +1,6 @@
 /*!
- * complexValidate v0.2
- * Date: 2018-07-08T19:26Z
+ * complexValidate v0.3
+ * Date: 2018-07-010T21:44Z
  */
 (function () {
     //基本正则
@@ -27,8 +27,8 @@
         },
         password:{
             type:'fun',
-            regex:function (input,multiRegex) {
-                if(multiRegex($(input[0]),"notNull")&&multiRegex($(input[1]),"notNull")){
+            regex:function (curr,input,regex) {
+                if(regex($(input[0]),"notNull")&&regex($(input[1]),"notNull")){
                     return $(input[0]).val()==$(input[1]).val()
                 }
                 return false
@@ -36,8 +36,8 @@
         },
         length:{
             type:'fun',
-            regex:function (input,reg,k,j) {
-                var len=$(input[0]).val().length
+            regex:function (curr,input,reg,k,j) {
+                var len=$(curr).val().length
                 return len>=k&&len<j
             }
         },
@@ -62,7 +62,7 @@
             regex:/^[a-zA-Z0-9_-]{4,16}$/
         }
     }
-    var simpleValidate =new Object();
+    var complexValidate =new Object();
     var currGroupObj=null//当前组对象
     var _option=null;//配置对象
     //设置配置对象validateRegex
@@ -74,19 +74,7 @@
             }
         }
     }
-    simpleValidate.option=option;
-    //一个input匹配多个regex类型正则
-    function multiRegex() {
-        var input=arguments[0]
-        for(var i=1; i<arguments.length; i++){
-            if(validateRegex[arguments[i]].type=='regex'){
-                if (!validateRegex[arguments[i]].regex.test(input.val())){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    complexValidate.option=option;
     //返回带参数的validateRegex
     function getAttribute(text) {
         var val=text.trim(" ")
@@ -100,25 +88,44 @@
             }
         }
     }
+    function findbyvalidate(reg) {
+        var input=$(currGroupObj.validateRound+" *"+"[validateGroup='"+currGroupObj.validateGroup+"'][validate*='"+reg+"']")
+        var out=[]
+        for (var i=0;i<input.length;i++) {
+            var item=$(input[i]).attr("validate").split("|")
+            for(var j=0;j<item.length;j++){
+                if(reg==getAttribute(item[j]).attribute){
+                    out.push(input[i])
+                }
+            }
+        }
+        return out
+    }
     //匹配单个正则
     function Regex(item) {
         var validateArr=item.attr("validate")
         var v=validateArr.split("|")//验证类型匹配器
+       return Regexing(item,v)
+    }
+    //匹配过程共用
+    function Regexing(item,v,isexport) {
         for (var i in v){
             var attr=getAttribute(v[i])
             var reg=attr.attribute
             var attribute=validateRegex[reg]
             if(attribute){
                 switch (attribute.type){
-                    case 'regex':if(attribute.regex.test(item.val())!=true){return false}break
+                    case 'regex':
+                        if(attribute.regex.test(item.val())!=true){return false}break
                     case 'fun':
                         //返回当前区域validateRound中同一验证组validateGroup中同一验证类型validate的input数组
-                        var input=$(currGroupObj.validateRound+" *"+"[validateGroup='"+currGroupObj.validateGroup+"'][validate*='"+reg+"']")
+                        //外部调用不需要查找
+                        var input=isexport?item:findbyvalidate(reg)
                         if(attr.param){
-                            var flag=eval("attribute.regex(input,multiRegex,"+attr.param+")")
+                            var flag=eval("attribute.regex(item,input,exRegex,"+attr.param+")")
                             if(flag!=true){return false}
                         }else{
-                            if(attribute.regex(input,multiRegex)!=true){return false}
+                            if(attribute.regex(item,input,exRegex)!=true){return false}
                         }
                         break
                 }
@@ -127,6 +134,10 @@
             }
         }
         return true
+    }
+    //暴露匹配方法
+    function exRegex(item,v) {
+        return Regexing($(item),v.split("|"),true)
     }
     //验证返回验证未通过的对象
     function validate(group,callback){
@@ -142,11 +153,11 @@
         }
         return arr;
     }
-    simpleValidate.validate=validate;
+    complexValidate.validate=validate;
     //在配置文件中搜索验证组
     function searchGroup(groupid){
         if(_option==null){
-            throw new Error("没有配置 simpleValidate.option");
+            throw new Error("没有配置 complexValidate.option");
         }
         for(var i in _option){
             if(_option[i].validateGroup===groupid){
@@ -156,5 +167,5 @@
         throw new Error("验证组未定义");
         return null;
     }
-    window.simpleValidate=simpleValidate;
+    window.complexValidate=complexValidate;
 })();
